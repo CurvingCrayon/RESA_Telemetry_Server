@@ -8,13 +8,14 @@ npm install
 ```
 
 ## Development
+Run the following in different power shell windows
 ```
-npm start // Starts the development back-end
-npm run dev // Starts the development frontend
+npm start
+npm run dev
 ```
-When the last command is run a browser window will open which directs to localhost:3000
+When the last command is run a browser window will open which directs to localhost:3000.
 Any changes made to the front end will automatically be changed in the browser window that's opened.
-Changes made to the back end will require manual restart
+Changes made to the back end will require manual restart using the first command.
 
 ## Build
 After any changes are made to the front end, a build must be performed prior to launching the server
