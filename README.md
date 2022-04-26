@@ -12,6 +12,7 @@ npm install
 npm start // Starts the development back-end
 npm run dev // Starts the development frontend
 ```
+When the last command is run a browser window will open which directs to localhost:3000
 Any changes made to the front end will automatically be changed in the browser window that's opened.
 Changes made to the back end will require manual restart
 
@@ -25,3 +26,4 @@ npm run build
 ```
 npm start
 ```
+Navigate to localhost in your browser
