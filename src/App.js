@@ -14,6 +14,15 @@ import './App.css';
 
 import * as API from './API';
 
+var FloatOutputs = ["speed", "voltage", "obstacle_dist", "power_pwm", "steer_pwm", "drive_pwm", "acc_x", "acc_y", "acc_z",  "x_rot", "y_rot", "z_rot", "emergency_stop", "steer_direction", "timestamp", "is_default"];
+function NumberDisplay(props){
+    return (
+        <div style={{width:"25%", border: "1px solid rgb(200,200,200)", padding: "10px", margin:"5px", display:"inline-block"}}>
+            <Form.Label>{props.name}</Form.Label>
+            &nbsp; {props.value}
+        </div>
+    )
+}
 function SliderInput(props){
     const [val, setVal] = useState(props.defaultValue);
     return(
@@ -89,20 +98,36 @@ function App(){
         <Container fluid="true" style={{margin:"10px", position: "relative", top: (nav.current || {offsetHeight:0}).offsetHeight}}>
 
             <Card style={{width:"60%"}}>
-            <Card.Header as="h5">Controls &nbsp; &nbsp;
-                <Button>Send</Button>
-                
-            </Card.Header>
-            <Card.Body>
-            <Form.Check type="checkbox" defaultChecked={false} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
-                <SliderInput updateVal={updateVal} var={"speed"} name={"Driving PWM"} scaler={100} defaultValue={50} />
-                <SliderInput updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} scaler={100} defaultValue={50} />
-                <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} />
-                <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} />
-                <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} />
-            </Card.Body>
+                <Card.Header as="h5">Controls &nbsp; &nbsp;
+                    <Button>Send</Button>
+                    
+                </Card.Header>
+                <Card.Body>
+                <Form.Check type="checkbox" defaultChecked={false} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
+                    <SliderInput updateVal={updateVal} var={"speed"} name={"Driving PWM"} scaler={100} defaultValue={50} />
+                    <SliderInput updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} scaler={100} defaultValue={50} />
+                    <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} />
+                    <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} />
+                    <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} />
+                </Card.Body>
             </Card>
                 {/* <Speedo ringWidth={10}/> */}
+            <div style={{height:"30px"}} />
+            <Card style={{width:"60%"}}>
+                <Card.Header as="h5">Data &nbsp; &nbsp;
+                    
+                </Card.Header>
+                <Card.Body>
+                {
+                    FloatOutputs.map((name,index)=>(
+                        <NumberDisplay name={name} value={state[name]} />
+                    ))
+                }
+                
+                
+                    
+                </Card.Body>
+            </Card>
                 
                 
         </Container>
