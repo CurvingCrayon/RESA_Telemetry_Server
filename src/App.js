@@ -25,11 +25,18 @@ function NumberDisplay(props){
 }
 function SliderInput(props){
     const [val, setVal] = useState(props.defaultValue);
+    const slider = useRef(null);
+    useEffect(()=>{
+        if(props.override){
+            slider.value = 70;//val*100;
+        }
+    }, [props.val]);
+
     return(
         <div style={{width:"25%", border: "1px solid rgb(200,200,200)", padding: "10px", margin:"5px", display:"inline-block"}}>
             <Form.Label>{props.name}</Form.Label>
-            <Form.Range defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, event.target.value/props.scaler); setVal(event.target.value/props.scaler)}} />
-            <>{val}</>
+            <Form.Range ref={slider} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, event.target.value/props.scaler); setVal(event.target.value/props.scaler)}} />
+            <>{props.override ? props.val : val}</>
         </div>
     )
 }
@@ -53,7 +60,10 @@ function App(){
 	const timerId = useRef(-1);
 	const nav = useRef();
 
-    const [autoUpdate, setAutoUpdate] = useState(false);
+    const controllerTimerId = useRef(-1);
+    const enableController = useRef(false);
+
+    const [autoUpdate, setAutoUpdate] = useState(true);
 
 	function getTimeString(time){
 		var d = new Date(time);
@@ -68,6 +78,32 @@ function App(){
             API.sendValues(vals);
         }
     }
+
+    var nineState = 0;
+    function checkController(){
+        var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+        for (var i = 0; i < gamepads.length; i++) {
+            if (gamepads[i]) {
+                var g = gamepads[i];
+                // console.log(g.buttons);
+                // console.log(g.axes);
+
+                
+                if(g.buttons[9].value != nineState && !nineState){ // Start button
+                    enableController.current = !enableController.current; // Toggle controller enable
+                    console.log("Controller enabled:    ");
+                    console.log(enableController.current);
+                }
+                nineState = g.buttons[9].value;
+                if(enableController.current){
+                    updateVal("speed", 0.5 + g.buttons[7].value/2 - g.buttons[6].value/2);
+
+                    updateVal("steer_direction", (g.axes[0] < -0.5) * -1 + (g.axes[0] > 0.5) * 1 );
+                }
+            }
+        }
+    }
+
 	useEffect(()=>{ // On mount
 		clearInterval(timerId.current);
 		timerId.current = setInterval(() => {
@@ -75,14 +111,20 @@ function App(){
 				setState(newState);
 			})
 		}, 1000);
+
+        clearInterval(controllerTimerId.current);
+        controllerTimerId.current = setInterval(() => {
+            checkController();
+        }, 10);
 	}, []);
 
 	useEffect(()=>()=>{ // On unmount
 		clearInterval(timerId.current);
+        clearInterval(controllerTimerId.current);
 	}, []);
 
 	return (
-        <>
+        <div >
         <Navbar bg="light" fixed="top" expand="md" ref={nav}>   
             <Navbar.Brand>Electric Vehicle Dashboard</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
@@ -103,9 +145,9 @@ function App(){
                     
                 </Card.Header>
                 <Card.Body>
-                <Form.Check type="checkbox" defaultChecked={false} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
-                    <SliderInput updateVal={updateVal} var={"speed"} name={"Driving PWM"} scaler={100} defaultValue={50} />
-                    <SliderInput updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} scaler={100} defaultValue={50} />
+                <Form.Check type="checkbox" defaultChecked={true} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
+                    <SliderInput override={enableController.current} val={vals.speed} updateVal={updateVal} var={"speed"} name={"Driving PWM"} scaler={100} defaultValue={50} />
+                    <SliderInput override={enableController.current} val={vals.steer_direction} updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} scaler={100} defaultValue={50} />
                     <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} />
                     <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} />
                     <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} />
@@ -131,7 +173,7 @@ function App(){
                 
                 
         </Container>
-    </>
+    </div>
 	);
 }
 

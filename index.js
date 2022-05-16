@@ -19,6 +19,11 @@ const command = require('./node/command.js');
 const cors = require('cors');
 
 app.use(cors());
+app.use(express.urlencoded());
+app.use(function(req,res,next){
+	console.log(req.body);
+	next();
+});
 app.use(express.json());
 
 app.use('/command', function(req, res){
