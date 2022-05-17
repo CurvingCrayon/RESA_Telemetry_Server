@@ -24,19 +24,19 @@ function NumberDisplay(props){
     )
 }
 function SliderInput(props){
-    const [val, setVal] = useState(props.defaultValue);
+    const [val, setVal] = useState((props.defaultValue-props.offset)/props.scaler);
     const slider = useRef(null);
-    useEffect(()=>{
-        if(props.override){
-            slider.value = 70;//val*100;
-        }
-    }, [props.val]);
+    // useEffect(()=>{
+    //     if(props.override){
+    //         slider.value = 70;//val*100;
+    //     }
+    // }, [props.val]);
 
     return(
         <div style={{width:"25%", border: "1px solid rgb(200,200,200)", padding: "10px", margin:"5px", display:"inline-block"}}>
             <Form.Label>{props.name}</Form.Label>
-            <Form.Range ref={slider} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, event.target.value/props.scaler); setVal(event.target.value/props.scaler)}} />
-            <>{props.override ? props.val : val}</>
+            <Form.Range ref={slider} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, (event.target.value-props.offset)/props.scaler); setVal((event.target.value-props.offset)/props.scaler)}} />
+            <>{props.override ? props.val : val*props.dispScaler}</>
         </div>
     )
 }
@@ -93,6 +93,7 @@ function App(){
                     enableController.current = !enableController.current; // Toggle controller enable
                     console.log("Controller enabled:    ");
                     console.log(enableController.current);
+                    alert("Controller enabled: " +  String(enableController.current));
                 }
                 nineState = g.buttons[9].value;
                 if(enableController.current){
@@ -146,11 +147,11 @@ function App(){
                 </Card.Header>
                 <Card.Body>
                 <Form.Check type="checkbox" defaultChecked={true} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
-                    <SliderInput override={enableController.current} val={vals.speed} updateVal={updateVal} var={"speed"} name={"Driving PWM"} scaler={100} defaultValue={50} />
-                    <SliderInput override={enableController.current} val={vals.steer_direction} updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} scaler={100} defaultValue={50} />
-                    <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} />
-                    <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} />
-                    <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} />
+                    <SliderInput override={enableController.current} val={vals.speed} updateVal={updateVal} var={"speed"} name={"Speed setpoint (m/s)"} dispScaler={2*Math.PI*0.1} scaler={4.2} defaultValue={50} offset={50} />
+                    <SliderInput override={enableController.current} val={vals.steer_direction} updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} dispScaler={1} scaler={100} defaultValue={50} offset={0} />
+                    <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} dispScaler={1} offset={0} />
+                    <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} dispScaler={1} offset={0} />
+                    <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} dispScaler={1} offset={0} />
                 </Card.Body>
             </Card>
                 {/* <Speedo ringWidth={10}/> */}
