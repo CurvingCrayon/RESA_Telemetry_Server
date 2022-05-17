@@ -35,3 +35,16 @@ export function sendValues(vals){
         });
     })
 }
+
+export function getVar(key){
+    return new Promise((resolve, reject)=>{
+        ajax.getJSONFromURL("/readvar/"+key, []).then(result=>{
+            if(result.success){
+                resolve(result.resp);
+            }
+            else{
+                reject(result);
+            }
+        })
+    });
+}

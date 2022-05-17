@@ -51,6 +51,22 @@ app.get('/read', function(req, res){
     }
 });
 
+app.get('/readvar/:key', function(req, res){
+    // console.log("Read from IP " + req.ip);
+    try{
+        var currState = state.getVal(req.params.key);
+        currState.success = true;
+        res.status(200).send(currState);
+    }
+    catch(e){
+        console.error("Error when reading from IP " + req.ip + ", " + e.message);
+        res.status(500).send({
+            success: false,
+            err: e.message
+        })
+    }
+});
+
 app.post('/mcu', function(req, res){
     console.log("Read from IP " + req.ip);
     try{
