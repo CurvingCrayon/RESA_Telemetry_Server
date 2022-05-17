@@ -6,6 +6,7 @@ module.exports.update = function(obj){
     CurrentState = obj;
     CurrentState.lastUpdate = new Date();
     States.push(obj);
+    obj.slice(Math.max(obj.length - 1000, 0)); // Only take last 1000 entries
 }
 module.exports.get = function(formatTime){
     var tempState = JSON.parse(JSON.stringify(CurrentState));

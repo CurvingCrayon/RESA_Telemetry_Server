@@ -9,7 +9,7 @@ import react, {Navbar, Nav, Button, Image, Card, ListGroup, Form} from 'react-bo
 
 import Container from 'react-bootstrap/Container';
 import Speedo from 'react-d3-speedometer';
-import {LineChart, XAxis, Tooltip, CartesianGrid, Line} from 'recharts';
+import {LineChart, XAxis, YAxis, Legend, Tooltip, CartesianGrid, Line} from 'recharts';
 
 import './App.css';
 
@@ -21,8 +21,8 @@ function Chart(props){
             width={400}
             height={400}
             data={props.data}
-            // margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
             >
+            <YAxis />
             <XAxis dataKey="time" />
             <Tooltip />
             <CartesianGrid stroke="#f5f5f5" />
@@ -76,6 +76,8 @@ function App(){
     const [data, setData] = useState([]);
     const tVal = useRef("speed");
 
+    const [logs, setLogs] = useState([]);
+
 	const timerId = useRef(-1);
 	const nav = useRef();
 
@@ -84,6 +86,28 @@ function App(){
 
     const [autoUpdate, setAutoUpdate] = useState(true);
 
+
+    function updateLogs(){
+        API.getVar("uno_debug_msg").then((results)=>{
+            // Reformat data
+            console.log(results);
+            var data = [];
+            var max = results[1][results[1].length-1];
+            for(var i = 0; i < results[0].length; i++){
+                if(results[1][i] && results[1][i] > max - 60000){
+                    data.push({
+                        time: results[1][i],
+                        val:  results[0][i]
+                    });
+                }
+            }
+            console.log(data);
+            setLogs(data);
+            
+        }).catch(err=>{
+            console.log(err);
+        })
+    }
     function updatePlot(){
         var key = tVal.current;
         console.log(key);
@@ -157,6 +181,7 @@ function App(){
 				setState(newState);
 			})
             updatePlot();
+            updateLogs();
 		}, 1000);
 
         clearInterval(controllerTimerId.current);
@@ -219,6 +244,30 @@ function App(){
                         <NumberDisplay addPlot={addPlot} name={name} value={state[name]} />
                     ))
                 }
+                
+                
+                    
+                </Card.Body>
+            </Card>
+
+            <Card style={{width:"60%"}}>
+                <Card.Header as="h5">Debug output
+                    
+                </Card.Header>
+                <Card.Body>
+                    <div style={{maxHeight:"300px", overflow: "auto", backgroundColor:  "black"}}>
+                        {
+                            logs.map((val, index)=>(
+                                (
+                                    val.val !== '' ?
+                                    <p style={{color:   "#00FF00", margin:0}}>{"[" +   String(val.time) +"]" + val.val}</p>
+                                    :
+                                    <></>
+                                )
+                                
+                            ))
+                        }
+                    </div>
                 
                 
                     
