@@ -22,7 +22,7 @@ function Chart(props){
             height={400}
             data={props.data}
             >
-            <YAxis />
+            <YAxis domain={['dataMin', dataMax => (Math.max(dataMax, 1))]} />
             <XAxis dataKey="time" />
             <Tooltip />
             <CartesianGrid stroke="#f5f5f5" />
