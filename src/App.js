@@ -179,15 +179,14 @@ function App(){
         }
     }
 
-    function updateVals(keys, values){
+    function updateVals(keys, values, dontRender){
         var tempVals = vals;
         for(var i = 0; i < keys.length; i++){
             tempVals[keys[i]] = values[i];
         }
-        setVals(tempVals);
-        if(autoUpdate){
-            API.sendValues(vals);
-        }
+        if(!dontRender) 
+            setVals(tempVals);
+        API.sendValues(vals);
     }
 
     var nineState = 0;
@@ -215,15 +214,19 @@ function App(){
                     else{
                         newSpeedVal = newSpeedVal*0.25 + 0.75*Math.sign(newSpeedVal);
                     }
+                    // ACTIVATE NOS!!!
+                    if(g.buttons[0].value == 0){
+                        newSpeedVal = newSpeedVal * 0.25;
+                    }
                     // updateVal("speed", newSpeedVal);
                     // speedControl.setState({val: Math.pow(g.buttons[7].value - g.buttons[6].value, 3)})
-                    speedOverride.current = newSpeedVal;
+                    // speedOverride.current = newSpeedVal;
 
                     var newSteerVal = g.axes[0];
                     // updateVal("steer_direction",  newSteerVal);
-                    steerOverride.current = newSteerVal;
+                    // steerOverride.current = newSteerVal;
 
-                    updateVals(["speed","steer_direction"],[newSpeedVal, newSteerVal]);
+                    updateVals(["speed","steer_direction"],[newSpeedVal, newSteerVal], true);
                 }
             }
         }
@@ -242,7 +245,7 @@ function App(){
         clearInterval(controllerTimerId.current);
         controllerTimerId.current = setInterval(() => {
             checkController();
-        }, 100);
+        }, 200);
 	}, []);
 
 	useEffect(()=>()=>{ // On unmount
