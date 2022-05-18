@@ -216,7 +216,7 @@ function App(){
                     }
                     // ACTIVATE NOS!!!
                     if(g.buttons[0].value == 0){
-                        newSpeedVal = newSpeedVal * 0.25;
+                        newSpeedVal = newSpeedVal * 0.2;
                     }
                     newSpeedVal = newSpeedVal * 25;
                     if(newSpeedVal > -2 &&  newSpeedVal < 2){
