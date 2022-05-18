@@ -43,6 +43,12 @@ function SliderInput(props){
     const [val, setVal] = useState((props.defaultValue-props.offset)/props.scaler);
     const slider = useRef(null);
 
+    useEffect(()=>{
+        if(props.override){
+            setVal(props.overrideVal);
+        }
+    },[props.overrideVal])
+
     function c(val){
         var dz = (props.deadzone ? props.deadzone : 0);
         val = (val - props.offset)/props.scaler;
@@ -103,6 +109,8 @@ function App(){
 
 	const timerId = useRef(-1);
 	const nav = useRef();
+    const speedOverride = useRef(0);
+    const steerOverride = useRef(0);
 
     const controllerTimerId = useRef(-1);
     const enableController = useRef(false);
@@ -189,9 +197,20 @@ function App(){
                 }
                 nineState = g.buttons[9].value;
                 if(enableController.current){
-                    updateVal("speed", Math.pow(g.buttons[7].value - g.buttons[6].value, 3));
+                    var newSpeedVal = g.buttons[7].value - g.buttons[6].value;
+                    if(newSpeedVal < 0.5 && newSpeedVal > -0.5){
+                        newSpeedVal *= 1.5;
+                    }
+                    else{
+                        newSpeedVal = newSpeedVal*0.25 + 0.75*Math.sign(newSpeedVal);
+                    }
+                    updateVal("speed", newSpeedVal);
+                    // speedControl.setState({val: Math.pow(g.buttons[7].value - g.buttons[6].value, 3)})
+                    speedOverride.current = newSpeedVal;
 
-                    updateVal("steer_direction", (g.axes[0] < -0.5) * -1 + (g.axes[0] > 0.5) * 1 );
+                    var newSteerVal = g.axes[0];
+                    updateVal("steer_direction",  newSteerVal);
+                    steerOverride.current = newSteerVal;
                 }
             }
         }
@@ -242,8 +261,8 @@ function App(){
                 </Card.Header>
                 <Card.Body>
                 <Form.Check type="checkbox" defaultChecked={true} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
-                    <SliderInput override={enableController.current} val={vals.speed} updateVal={updateVal} var={"speed"} name={"Speed setpoint (m/s)"} dispScaler={8.3} scaler={50} defaultValue={50} offset={50} deadzone={0} zero={true} />
-                    <SliderInput override={enableController.current} val={vals.steer_direction} updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} dispScaler={1} scaler={50} defaultValue={50} offset={50} />
+                    <SliderInput overrideVal={speedOverride.current} override={enableController.current} val={vals.speed} updateVal={updateVal} var={"speed"} name={"Speed setpoint (m/s)"} dispScaler={8.3} scaler={50} defaultValue={50} offset={50} deadzone={0} zero={true} />
+                    <SliderInput overrideVal={steerOverride.current} override={enableController.current} val={vals.steer_direction} updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} dispScaler={1} scaler={50} defaultValue={50} offset={50} />
                     <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} dispScaler={1} offset={0} />
                     <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} dispScaler={1} offset={0} />
                     <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} dispScaler={1} offset={0} />
