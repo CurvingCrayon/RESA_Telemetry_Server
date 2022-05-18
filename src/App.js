@@ -272,7 +272,7 @@ function App(){
 
             <Card style={{width:"60%"}}>
                 <Card.Header as="h5">Controls &nbsp; &nbsp;
-                    <Button>Send</Button>
+                    <Button onClick={()=>{API.sendValues(vals)}}>Send</Button>
                     
                 </Card.Header>
                 <Card.Body>
