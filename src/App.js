@@ -219,6 +219,9 @@ function App(){
                         newSpeedVal = newSpeedVal * 0.25;
                     }
                     newSpeedVal = newSpeedVal * 25;
+                    if(newSpeedVal > -2 &&  newSpeedVal < 2){
+                        newSpeedVal  = 0;
+                    }
 
                     speedOverride.current = newSpeedVal;
 
