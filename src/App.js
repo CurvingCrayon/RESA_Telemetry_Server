@@ -58,7 +58,10 @@ function SliderInput(props){
     return(
         <><div style={{width:"25%", border: "1px solid rgb(200,200,200)", padding: "10px", margin:"5px", display:"inline-block"}}>
             <Form.Label>{props.name}</Form.Label>
-            <Form.Range ref={slider} value={invc(val)} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, c(event.target.value)); setVal(c(event.target.value))}} />
+            <Form.Range ref={slider} value={invc(val)} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{
+                props.updateVal(event.target.name, c(event.target.value)); 
+                setVal(c(event.target.value))
+            }} />
             <>{props.override ? Math.round(props.val*props.dispScaler*10)/10 : Math.round(val*props.dispScaler*10)/10}</>
             &nbsp; &nbsp;
             <>
@@ -186,7 +189,7 @@ function App(){
                 }
                 nineState = g.buttons[9].value;
                 if(enableController.current){
-                    updateVal("speed", (g.buttons[7].value/2 - g.buttons[6].value/2)*2);
+                    updateVal("speed", Math.pow(g.buttons[7].value - g.buttons[6].value, 3));
 
                     updateVal("steer_direction", (g.axes[0] < -0.5) * -1 + (g.axes[0] > 0.5) * 1 );
                 }
