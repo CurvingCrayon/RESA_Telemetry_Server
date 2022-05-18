@@ -218,13 +218,12 @@ function App(){
                     if(g.buttons[0].value == 0){
                         newSpeedVal = newSpeedVal * 0.25;
                     }
-                    // updateVal("speed", newSpeedVal);
-                    // speedControl.setState({val: Math.pow(g.buttons[7].value - g.buttons[6].value, 3)})
-                    // speedOverride.current = newSpeedVal;
+                    newSpeedVal = newSpeedVal * 25;
+
+                    speedOverride.current = newSpeedVal;
 
                     var newSteerVal = g.axes[0];
-                    // updateVal("steer_direction",  newSteerVal);
-                    // steerOverride.current = newSteerVal;
+                    steerOverride.current = newSteerVal;
 
                     updateVals(["speed","steer_direction"],[newSpeedVal, newSteerVal], true);
                 }
