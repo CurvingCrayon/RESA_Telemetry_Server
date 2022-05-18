@@ -222,14 +222,14 @@ function App(){
 			API.getState().then(newState=>{
 				setState(newState);
 			})
-            updatePlot();
-            updateLogs();
+            // updatePlot();
+            // updateLogs();
 		}, 1000);
 
         clearInterval(controllerTimerId.current);
         controllerTimerId.current = setInterval(() => {
             checkController();
-        }, 100);
+        }, 500);
 	}, []);
 
 	useEffect(()=>()=>{ // On unmount
@@ -272,7 +272,7 @@ function App(){
             <div style={{position:"absolute", top:0, right:0}}>
                 <Speedo  currentValueText={"Measured Speed (rad/s): ${value}"} value={Math.abs(state.speed)} minValue={0} maxValue={8} ringWidth={10} startColor={"#FFFFFF"} endColor={"#00FF00"} />
                 <h5>{tVal.current}</h5>
-                <Chart data={data} />
+                {/* <Chart data={data} /> */}
             </div>
             
             <div style={{height:"30px"}} />
