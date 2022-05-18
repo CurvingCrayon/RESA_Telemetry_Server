@@ -281,9 +281,9 @@ function App(){
                 <Form.Check type="checkbox" defaultChecked={true} label="Auto-send (automatically send updates when values are changed)" onChange={(event)=>{setAutoUpdate(event.target.checked)}} />
                     <SliderInput overrideVal={speedOverride.current} override={enableController.current} val={vals.speed} updateVal={updateVal} var={"speed"} name={"Speed setpoint (rad/s)"} dispScaler={1} scaler={2} defaultValue={50} offset={50} deadzone={2} zero={true} />
                     <SliderInput overrideVal={steerOverride.current} override={enableController.current} val={vals.steer_direction} updateVal={updateVal} var={"steer_direction"} name={"Steering PWM"} dispScaler={1} scaler={50} defaultValue={50} offset={50} />
-                    <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance"} scaler={20} defaultValue={0} dispScaler={1} offset={0} />
-                    <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel"} scaler={20} defaultValue={0} dispScaler={1} offset={0} />
-                    <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} dispScaler={1} offset={0} />
+                    <SliderInput updateVal={updateVal} var={"stop_distance"} name={"Stopping distance (m)"} scaler={100} defaultValue={0} dispScaler={1} offset={0} />
+                    <SliderInput updateVal={updateVal} var={"stop_accel"} name={"Stopping accel (m/s^2)"} scaler={5} defaultValue={75} dispScaler={1} offset={0} />
+                    {/* <CheckInput updateVal={updateVal} var={"autonomous_steer"} name={"Auto steering"} defaultValue={false} dispScaler={1} offset={0} /> */}
                 </Card.Body>
             </Card>
 
