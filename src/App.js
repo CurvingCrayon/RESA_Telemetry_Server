@@ -51,17 +51,22 @@ function SliderInput(props){
         }
         return val;
     }
+    function invc(val){
+        return val*props.scaler +   props.offset;
+    }
 
     return(
         <><div style={{width:"25%", border: "1px solid rgb(200,200,200)", padding: "10px", margin:"5px", display:"inline-block"}}>
             <Form.Label>{props.name}</Form.Label>
-            <Form.Range ref={slider} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, c(event.target.value)); setVal(c(event.target.value))}} />
+            <Form.Range ref={slider} value={invc(val)} defaultValue={props.defaultValue} name={props.var} onChange={(event)=>{props.updateVal(event.target.name, c(event.target.value)); setVal(c(event.target.value))}} />
             <>{props.override ? Math.round(props.val*props.dispScaler*10)/10 : Math.round(val*props.dispScaler*10)/10}</>
             &nbsp; &nbsp;
             <>
                 {(props.zero ?
                     <Button onClick={(event)=>{
-                        slider.value=0
+                        setVal(0);
+                        props.updateVal(props.var, 0);
+                        
                     }}>Zero</Button>
                 :
                 <></>)}
